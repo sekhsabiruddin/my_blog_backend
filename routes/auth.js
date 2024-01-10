@@ -54,7 +54,7 @@ router.post("/login", async (req, res) => {
 
     res
       .cookie("token", token, {
-        domain: ".onrender.com",
+        domain: "fri-admin-pr-31.customdomain.com",
         secure: true,
         sameSite: "None",
       })
