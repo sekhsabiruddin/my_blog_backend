@@ -4,7 +4,6 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-
 const secret = process.env.SECRET;
 // console.log("serect code", secret);
 // REGISTER
@@ -38,19 +37,31 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(404).json("User not found!");
     }
+
     const match = await bcrypt.compare(req.body.password, user.password);
 
     if (!match) {
       return res.status(401).json("Wrong credentials!");
     }
+
     const token = jwt.sign(
       { _id: user._id, username: user.username, email: user.email },
-      "rohitkurmar",
+      process.env.SECRET,
       { expiresIn: "3d" }
     );
+
     const { password, ...info } = user._doc;
-    res.cookie("token", token).status(200).json(info);
+
+    res
+      .cookie("token", token, {
+        domain: ".onrender.com",
+        secure: true,
+        sameSite: "None",
+      })
+      .status(200)
+      .json(info);
   } catch (err) {
+    console.error("Login Error:", err);
     res.status(500).json(err);
   }
 });
