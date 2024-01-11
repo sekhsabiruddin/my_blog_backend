@@ -13,10 +13,14 @@ const { connectDB } = require("./config/db");
 app.use(cookieParser());
 app.use(express.json());
 app.use("/images", express.static(path.join(__dirname, "/images")));
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// app.use(cors({ origin: "*", credentials: true }));
+app.use(
+  cors({ origin: "https://mern-forntend-main.vercel.app", credentials: true })
+);
+
 app.use("/api/auth/", authRoute);
 app.use("/api/posts/", postRoute);
-app.set("trust proxy", 1);
 
 //Image upload
 const storage = multer.diskStorage({

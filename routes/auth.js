@@ -52,13 +52,11 @@ router.post("/login", async (req, res) => {
 
     const { password, ...info } = user._doc;
 
-    res
-      .cookie("token", token, {
-        secure: true,
-        sameSite: "None",
-      })
-      .status(200)
-      .json(info);
+    res.cookie("token", token, {
+      secure: process.env.NODE_ENV === "production", // Set to true in production
+      sameSite: "None",
+      httpOnly: true,
+    });
   } catch (err) {
     console.error("Login Error:", err);
     res.status(500).json(err);
@@ -80,32 +78,6 @@ router.get("/logout", async (req, res) => {
     res.status(500).json(err);
   }
 });
-
-//LOGIN
-// router.post("/login", async (req, res) => {
-//   try {
-//     // ... (existing code)
-
-//     const token = jwt.sign(
-//       { _id: user._id, username: user.username, email: user.email },
-//       "rohitkurmar",
-//       { expiresIn: "3d" }
-//     );
-//     const { password, ...info } = user._doc;
-
-//     // Update the cookie name to "jwtToken"
-//     res
-//       .cookie("jwtToken", token, {
-//         httpOnly: true,
-//         sameSite: "none",
-//         secure: true,
-//       })
-//       .status(200)
-//       .json(info);
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// });
 
 // REFETCH
 router.get("/refetch", (req, res) => {
